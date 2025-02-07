@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Finder</title>
+    <style>
+        /* Reset some default styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff ;
+            color: #333;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 36px;
+            color: #333;
+        }
+
+        form {
+            background-color: #ededed;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        form h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        form label {
+            font-size: 14px;
+            margin-right: 10px;
+            color: #333;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+        }
+
+        /* Style for select, range sliders, and checkboxes */
+        input[type="checkbox"], input[type="radio"] {
+            margin-right: 8px;
+        }
+
+        select, input[type="range"], button {
+            background-color: #f1f1f1;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 14px;
+            color: #333;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        select:hover, input[type="range"]:hover, button:hover {
+            background-color: #e0e0e0;
+        }
+
+        input[type="range"] {
+            margin-top: 10px;
+        }
+
+        #price-output {
+            font-weight: bold;
+            color: #333;
+            margin-top: 5px;
+            display: block;
+        }
+
+        button {
+            padding: 12px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #222;
+        }
+
+        /* Results Section */
+        .result {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .result-item {
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            border-radius: 10px;
+            border: 2px solid #eee;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            height: auto;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .result-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 2px solid #f7f7f7;
+        }
+
+        .food-info {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            flex-grow: 1;
+            color: #333;
+        }
+
+        .result-item h4 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .result-item p {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #777;
+        }
+
+        .description {
+            display: none;
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f7f7f7;
+            border-radius: 5px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item.expanded .description {
+            display: block;
+        }
+
+        .result-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Hover effect on food info section */
+        .result-item:hover .food-info {
+            background-color: #f7f7f7;
+        }
+
+    </style>
+</head>
+<body>
+<div style=" display: flex; align-items: center;"><img style = "max-width: 500px;width: 60%; margin: auto;"src="images/logo.png" alt="NAAD logo"></div>
+
+
+<form id="food-filter">
+    <div class="form-section" style="background-color: white; padding: 10px; border-radius: 10px;">
+        <h3>Choose Options:</h3>
+        <label><input type="checkbox" id="veg" value="v"> Pure Veg</label>
+    </div>
+    
+    <div class="form-section" style="background-color: white; padding: 10px; border-radius: 10px;">
+        <h3>Choose Taste Preferences:</h3>
+        <select id="taste" name="taste">
+            <option value="Sweet">Sweet</option>
+            <option value="Spicy">Spicy</option>
+            <option value="Sour">Sour</option>
+            <option value="Salty">Salty</option>
+            <option value="Tangy">Tangy</option>
+            <option value="Drink">Drink</option>
+            <option value="Carbonated">Carbonated</option>
+        </select>
+    </div>
+
+    <div class="form-section" style="background-color: white; padding: 10px; border-radius: 10px;">
+        <h3 style=" margin-BOTTOM: -10px;">Choose Price Range:</h3>
+        <input type="range" id="price" min="10" max="200" step="5" value="50">
+        <span id="price-output" style="text-align: center; margin-top: -9px;;">₹50</span>
+    </div>
+
+    <div class="form-section" style="background-color: white; padding: 10px; border-radius: 10px;">
+        <h3>Sort By:</h3>
+
+        <select id="sort" name="sort">
+            <option value="price">Price (Low to High)</option>
+            <option value="price-desc">Price (High to Low)</option>
+            <option value="rating">Rating (Low to High)</option>
+            <option value="rating-desc">Rating (High to Low)</option>
+        </select>
+    </div>
+
+    <button type="button" onclick="filterFood()">Find Food</button>
+</form>
+
+<div id="results" class="result"></div>
+
+<script>
+    const priceSlider = document.getElementById("price");
+    const priceOutput = document.getElementById("price-output");
+
+    priceSlider.oninput = function() {
+        priceOutput.innerHTML = '₹' + this.value;
+    }
+
+    function filterFood() {
+        const isVeg = document.querySelector('#veg').checked ? 'v' : '';
+        const price = document.getElementById("price").value;
+        const sortBy = document.getElementById("sort").value;
+
+        const tastes = [document.getElementById("taste").value];
+
+        const formData = new FormData();
+        formData.append("isVeg", isVeg);
+        formData.append("price", price);
+        formData.append("tastes", JSON.stringify(tastes));
+        formData.append("sortBy", sortBy);
+
+        fetch("filter.php", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.text())
+        .then(text => {
+            try {
+                if (text.includes("<br") || text.includes("<html")) {
+                    throw new Error("Unexpected HTML response from the server.");
+                }
+
+                const data = JSON.parse(text);
+                const resultsDiv = document.getElementById("results");
+                resultsDiv.innerHTML = "";
+
+                if (data.length === 0) {
+                    resultsDiv.innerHTML = "<p>No food options found matching your criteria.</p>";
+                } else {
+                    data.forEach(food => {
+                        resultsDiv.innerHTML += `
+                            <div class="result-item">
+                                <img src="${food.image}" alt="Food Image" onclick="toggleDescription(this)">
+                                <div class="food-info" onclick="toggleDescription(this)">
+                                    <h4>${food.name}</h4>
+                                    <p style="margin-top: -10px;">${food.taste}</p>
+                                    <div class="description">${food.description}</div>
+                                </div>
+                                <div style="padding: 10px; display: flex; background-color: black; align-items: center; justify-content: space-around">
+                                    <p class="price">₹${food.price}</p>
+                                    <p class="rating">${food.rating}/10</p>
+                                    <p class="location" style="color: white; margin: 0; padding: 0;">
+                                        <a style="color: white; text-decoration: none; display: inline-flex; align-items: center; border: none;" href="${food.location}" target="_blank">
+                                            <img src="svg/location.svg" style="width: 35px; height: 35px; vertical-align: middle;" />
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                document.getElementById("results").innerHTML = "<p>There was an error processing your request. Please try again later.</p>";
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById("results").innerHTML = "<p>There was an error processing your request. Please try again later.</p>";
+        });
+    }
+
+    // Toggle description visibility
+    function toggleDescription(element) {
+        const resultItem = element.closest('.result-item');
+        resultItem.classList.toggle('expanded');
+    }
+</script>
+
+</body>
+</html>
